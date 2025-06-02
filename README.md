@@ -1,2 +1,2 @@
 # Site-bud
-Testing sute fo my Diploma
+Testing site fo my Diploma
