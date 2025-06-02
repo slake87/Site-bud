@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Розрахунки | Будівельний калькулятор</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="styles/style6.css">
+</head>
+<body>
+    <!-- Навігаційне меню -->
+    <header class="dashboard-header">
+        <nav class="nav-menu">
+            <ul class="nav-list">
+                <li><a href="dashboard.html" class="nav-link">Проєкти</a></li>
+                <li><a href="materials.html" class="nav-link">Матеріали</a></li>
+                <li><a href="calculation.html" class="nav-link active">Розрахунки</a></li>
+                <li><a href="suppliers.html" class="nav-link">Постачальники</a></li>
+            </ul>
+        </nav>
+        <div class="user-panel">
+            <button class="profile" onclick="window.location.href='profile.html'">Мій профіль</button>
+            <span class="username">Привіт, Користувач!</span>
+            <button class="logout-btn" onclick="window.location.href='login.html'">Вихід</button>
+        </div>
+    </header>
+
+    <!-- Основний вміст -->
+    <main class="dashboard-main">
+        <div class="section-header">
+            <h2 class="section-title">Розрахунок вартості матеріалів</h2>
+        </div>
+        
+        <div class="calculation-container">
+            <!-- Ліва колонка: Введення даних -->
+            <div class="input-section">
+                <div class="calculation-block">
+                    <h3 class="block-title">
+                        <span>🏠</span> Покрівля (дах)
+                    </h3>
+                    <div class="input-group">
+                        <label for="roof-price">Ціна за м² (грн):</label>
+                        <input type="number" id="roof-price" min="0" step="0.01" value="">
+                    </div>
+                    <div class="input-group">
+                        <label for="roof-area">Площа покрівлі (м²):</label>
+                        <input type="number" id="roof-area" min="0" step="0.1" value="">
+                    </div>
+                </div>
+                
+                <div class="calculation-block">
+                    <h3 class="block-title">
+                        <span>🧱</span> Стіни (штукатурка)
+                    </h3>
+                    <div class="input-group">
+                        <label for="walls-price">Ціна за м² (грн):</label>
+                        <input type="number" id="walls-price" min="0" step="0.01" value="">
+                    </div>
+                    <div class="input-group">
+                        <label for="walls-area">Площа стін (м²):</label>
+                        <input type="number" id="walls-area" min="0" step="0.1" value="">
+                    </div>
+                </div>
+                
+                <div class="calculation-block">
+                    <h3 class="block-title">
+                        <span>🔳</span> Підлога
+                    </h3>
+                    <div class="input-group">
+                        <label for="floor-price">Ціна за м² (грн):</label>
+                        <input type="number" id="floor-price" min="0" step="0.01" value="">
+                    </div>
+                    <div class="input-group">
+                        <label for="floor-area">Площа підлоги (м²):</label>
+                        <input type="number" id="floor-area" min="0" step="0.1" value="">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Права колонка: Результати та візуалізація -->
+            <div class="result-section">
+                <h3 class="block-title">Результати розрахунку</h3>
+                
+                <div class="result-item">
+                    <span>Покрівля (дах):</span>
+                    <span class="cost-value" id="roof-result"></span>
+                </div>
+                
+                <div class="result-item">
+                    <span>Стіни (штукатурка):</span>
+                    <span class="cost-value" id="walls-result"></span>
+                </div>
+                
+                <div class="result-item">
+                    <span>Підлога:</span>
+                    <span class="cost-value" id="floor-result"></span>
+                </div>
+                
+                <div class="result-item total">
+                    <span>Загальна вартість:</span>
+                    <span class="cost-value" id="total-result"></span>
+                </div>
+                
+                <div class="visualization">
+                    <h4 class="visualization-title">Візуалізація витрат</h4>
+                    <div class="cost-bars">
+                        <div class="cost-bar" id="roof-bar" style="height: 120px;">
+                            <div class="cost-bar-value"></div>
+                            <div class="cost-bar-label">Покрівля</div>
+                        </div>
+                        <div class="cost-bar" id="walls-bar" style="height: 200px;">
+                            <div class="cost-bar-value"></div>
+                            <div class="cost-bar-label">Стіни</div>
+                        </div>
+                        <div class="cost-bar" id="floor-bar" style="height: 109px;">
+                            <div class="cost-bar-value"></div>
+                            <div class="cost-bar-label">Підлога</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="save-container">
+                    <button class="save-btn" id="save-calculation">
+                        <span>💾</span> Підписати та зберегти
+                    </button>
+                    <button class="export-btn" id="export-excel">
+                        <span>📊</span> Чистий Експорт в Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Модальне вікно для збереження -->
+    <div class="modal" id="save-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Зберегти кошторис</h3>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-input-group">
+                <label for="estimate-name">Назва кошторису:</label>
+                <input type="text" id="estimate-name" placeholder="Наприклад: Котедж 'Сонячний'">
+            </div>
+            <div class="modal-input-group">
+                <label for="estimate-date">Дата:</label>
+                <input type="date" id="estimate-date">
+            </div>
+            <div class="modal-buttons">
+                <button class="export-btn" id="export-only">Експортувати</button>
+                <button class="save-btn" id="save-and-export">Зберегти та експортувати</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Отримуємо всі необхідні елементи
+        const roofPrice = document.getElementById('roof-price');
+        const roofArea = document.getElementById('roof-area');
+        const wallsPrice = document.getElementById('walls-price');
+        const wallsArea = document.getElementById('walls-area');
+        const floorPrice = document.getElementById('floor-price');
+        const floorArea = document.getElementById('floor-area');
+        
+        const roofResult = document.getElementById('roof-result');
+        const wallsResult = document.getElementById('walls-result');
+        const floorResult = document.getElementById('floor-result');
+        const totalResult = document.getElementById('total-result');
+        
+        const roofBar = document.getElementById('roof-bar');
+        const wallsBar = document.getElementById('walls-bar');
+        const floorBar = document.getElementById('floor-bar');
+        
+        const saveBtn = document.getElementById('save-calculation');
+        const exportBtn = document.getElementById('export-excel');
+        const saveModal = document.getElementById('save-modal');
+        const closeModal = document.getElementById('close-modal');
+        const exportOnlyBtn = document.getElementById('export-only');
+        const saveAndExportBtn = document.getElementById('save-and-export');
+        const estimateName = document.getElementById('estimate-name');
+        const estimateDate = document.getElementById('estimate-date');
+        
+        // Поточна дата для поля вводу дати
+        const today = new Date().toISOString().split('T')[0];
+        estimateDate.value = today;
+        
+        // Функція для форматування чисел у грошовий формат
+        function formatCurrency(value) {
+            return value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& ') + ' грн';
+        }
+        
+        // Функція для форматування чисел для відображення
+        function formatNumber(value) {
+            return value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& ');
+        }
+        
+        // Функція для розрахунку вартості
+        function calculateCosts() {
+            // Отримуємо значення
+            const rPrice = parseFloat(roofPrice.value) || 0;
+            const rArea = parseFloat(roofArea.value) || 0;
+            const wPrice = parseFloat(wallsPrice.value) || 0;
+            const wArea = parseFloat(wallsArea.value) || 0;
+            const fPrice = parseFloat(floorPrice.value) || 0;
+            const fArea = parseFloat(floorArea.value) || 0;
+            
+            // Розраховуємо вартість
+            const roofCost = rPrice * rArea;
+            const wallsCost = wPrice * wArea;
+            const floorCost = fPrice * fArea;
+            const totalCost = roofCost + wallsCost + floorCost;
+            
+            // Оновлюємо результати
+            roofResult.textContent = formatCurrency(roofCost);
+            wallsResult.textContent = formatCurrency(wallsCost);
+            floorResult.textContent = formatCurrency(floorCost);
+            totalResult.textContent = formatCurrency(totalCost);
+            
+            // Оновлюємо стовпчикову діаграму
+            updateVisualization(roofCost, wallsCost, floorCost, totalCost);
+            
+            return {
+                roof: { price: rPrice, area: rArea, cost: roofCost },
+                walls: { price: wPrice, area: wArea, cost: wallsCost },
+                floor: { price: fPrice, area: fArea, cost: floorCost },
+                total: totalCost
+            };
+        }
+        
+        // Функція для оновлення візуалізації
+        function updateVisualization(roof, walls, floor, total) {
+            // Знаходимо максимальне значення для масштабування
+            const maxValue = Math.max(roof, walls, floor, 1);
+            const scale = 200 / maxValue; // 200px - максимальна висота
+            
+            roofBar.style.height = (roof * scale) + 'px';
+            wallsBar.style.height = (walls * scale) + 'px';
+            floorBar.style.height = (floor * scale) + 'px';
+            
+            // Оновлюємо значення на стовпцях
+            roofBar.querySelector('.cost-bar-value').textContent = formatNumber(roof);
+            wallsBar.querySelector('.cost-bar-value').textContent = formatNumber(walls);
+            floorBar.querySelector('.cost-bar-value').textContent = formatNumber(floor);
+        }
+        
+        // Функція для експорту в Excel
+        function exportToExcel() {
+            const data = calculateCosts();
+            
+            // Створюємо робочу книгу
+            const wb = XLSX.utils.book_new();
+            
+            // Додаємо заголовки
+            const wsData = [
+                ["КОШТОРИС БУДІВЕЛЬНИХ МАТЕРІАЛІВ"],
+                ["Назва кошторису:", estimateName.value || "Без назви"],
+                ["Дата створення:", estimateDate.value],
+                [], // Пустий рядок
+                ["Тип робіт", "Ціна за м² (грн)", "Площа (м²)", "Загальна вартість (грн)"],
+                [
+                    "Покрівля (дах)", 
+                    data.roof.price, 
+                    data.roof.area, 
+                    data.roof.cost
+                ],
+                [
+                    "Стіни (штукатурка)", 
+                    data.walls.price, 
+                    data.walls.area, 
+                    data.walls.cost
+                ],
+                [
+                    "Підлога", 
+                    data.floor.price, 
+                    data.floor.area, 
+                    data.floor.cost
+                ],
+                [],
+                ["Загальна вартість", "", "", data.total]
+            ];
+            
+            // Створюємо робочий аркуш
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            
+            // Додаємо аркуш до книги
+            XLSX.utils.book_append_sheet(wb, ws, "Кошторис");
+            
+            // Форматуємо комірки
+            if (!ws['!merges']) ws['!merges'] = [];
+            ws['!merges'].push({s: {r: 0, c: 0}, e: {r: 0, c: 3}});
+            ws['!merges'].push({s: {r: 1, c: 1}, e: {r: 1, c: 3}});
+            ws['!merges'].push({s: {r: 2, c: 1}, e: {r: 2, c: 3}});
+            
+            // Генеруємо назву файлу
+            const fileName = `кошторис_${estimateName.value || 'без_назви'}_${estimateDate.value}.xlsx`;
+            
+            // Записуємо файл
+            XLSX.writeFile(wb, fileName);
+        }
+        
+        // Додаємо обробники подій для всіх полів вводу
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(input => {
+            input.addEventListener('input', calculateCosts);
+        });
+        
+        // Обробник для кнопки збереження
+        saveBtn.addEventListener('click', function() {
+            saveModal.style.display = 'flex';
+        });
+        
+        // Обробник для кнопки експорту
+        exportBtn.addEventListener('click', function() {
+            exportToExcel();
+        });
+        
+        // Обробник для кнопки закриття модального вікна
+        closeModal.addEventListener('click', function() {
+            saveModal.style.display = 'none';
+        });
+        
+        // Обробник для кнопки "Експортувати" у модальному вікні
+        exportOnlyBtn.addEventListener('click', function() {
+            exportToExcel();
+            saveModal.style.display = 'none';
+        });
+        
+        // Обробник для кнопки "Зберегти та експортувати"
+        saveAndExportBtn.addEventListener('click', function() {
+            // Тут буде логіка збереження в базі даних
+            alert('Кошторис збережено в системі!');
+            exportToExcel();
+            saveModal.style.display = 'none';
+        });
+        
+        // Закриваємо модальне вікно при кліку за його межами
+        window.addEventListener('click', function(e) {
+            if (e.target === saveModal) {
+                saveModal.style.display = 'none';
+            }
+        });
+        
+        // Виконуємо початковий розрахунок
+        calculateCosts();
+    </script>
+</body>
+</html>
