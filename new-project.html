@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Створення нового проєкту</title>
+  <link rel="stylesheet" href="styles/style4.css">
+  <div class="project-form-container">
+    <h2 class="project-form-title">Створення нового проєкту</h2>
+    <form action="save-project" method="post">
+      <div class="form-group">
+        <label for="project-name">Назва проєкту:</label>
+        <input type="text" id="project-name" name="project-name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="project-type">Тип проєкту:</label>
+        <select id="project-type" name="project-type" required>
+          <option value="">--Оберіть тип--</option>
+          <option value="residential">Житловий будинок</option>
+          <option value="commercial">Комерційна будівля</option>
+        </select>
+      </div>
+
+
+      <div class="form-group">
+        <label for="square">Площа (м²):</label>
+        <input type="number" id="square" name="square" required>
+      </div>
+
+      <div class="form-group">
+        <label for="floors">Кількість поверхів:</label>
+        <input type="number" id="floors" name="floors" min="1" max="10">
+      </div>
+
+      <div class="form-group">
+        <label for="foundation">Тип фундаменту:</label>
+        <select id="foundation" name="foundation">
+          <option value="">--Оберіть тип--</option>
+          <option value="full">Цілий</option>
+          <option value="partly">Стрічковий</option>
+        </select>
+      </div>
+
+ <div class="form-group">
+        <label for="floor">Підлога:</label>
+        <select id="floor" name="floor">
+          <option value="">--Оберіть тип--</option>
+          <option value="cement">Цемент</option>
+          <option value="tile coating">Покриття плитою</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="walls">Матеріал стін:</label>
+        <select id="walls" name="walls">
+          <option value="">--Оберіть тип--</option>
+          <option value="brick">Цегла</option>
+          <option value="aerated">Газобетон</option>
+          <option value="beton">Бетон</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="roof">Тип даху:</label>
+        <select id="roof" name="roof">
+          <option value="">--Оберіть тип--</option>
+          <option value="flat">Плоский</option>
+          <option value="gable">Двосхилий</option>
+          <option value="hip">Напів Вальмовий</option>
+        </select>
+      </div>
+<div class="form-group">
+        <label for="project_status">Статус проєкту:</label>
+        <select id="status" name="status">
+          <option value="">--Оберіть опцію--</option>
+          <option value="started">Почато</option>
+          <option value="in process">В процесі</option>
+          <option value="complete">Завершено</option>
+        </select>
+      </div>
+
+
+     <div class="form-buttons">
+  <button type="submit" class="create-btn">Створити</button>
+  <a href="calculations.html" class="link-btn">Порахувати ціну матеріалів</a>
+  <a href="dashboard.html" class="cancel-btn">Скасувати</a>
+  
+</div>
+
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>

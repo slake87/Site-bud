@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Постачальники | Будівельний калькулятор</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+       <link rel="stylesheet" href="styles/style7.css">
+   
+</head>
+<body>
+    <!-- Навігаційне меню -->
+    <header class="dashboard-header">
+        <nav class="nav-menu">
+            <ul class="nav-list">
+                <li><a href="dashboard.html" class="nav-link">Проєкти</a></li>
+                <li><a href="materials.html" class="nav-link">Матеріали</a></li>
+                <li><a href="calculations.html" class="nav-link">Розрахунки</a></li>
+                <li><a href="suppliers.html" class="nav-link active">Постачальники</a></li>
+            </ul>
+        </nav>
+        <div class="user-panel">
+            <button class="profile" onclick="window.location.href='profile.html'">Мій профіль</button>
+            <span class="username">Привіт, Користувач!</span>
+            <button class="logout-btn" onclick="window.location.href='login.html'">Вихід</button>
+        </div>
+    </header>
+
+    <!-- Основний вміст -->
+    <main class="dashboard-main">
+        <div class="section-header">
+            <h2 class="section-title">Наші постачальники</h2>
+            <button class="add-supplier-btn">
+                <i class="fas fa-plus"></i> Додати постачальника
+            </button>
+        </div>
+        
+        <div class="active-filters">
+            <!-- Активні фільтри будуть додаватись сюди -->
+        </div>
+        
+        <div class="suppliers-container">
+            <!-- Ліва колонка: Фільтри -->
+            <div class="filters-section">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="supplier-search" placeholder="Пошук постачальників...">
+                </div>
+                
+                <div class="filter-group">
+                    <h3><i class="fas fa-filter"></i> Категорії матеріалів</h3>
+                    <ul class="category-list" id="category-filter">
+                        <li class="category-item active" data-filter-type="category" data-filter-value="all">
+                            <i class="fas fa-circle"></i> Усі категорії
+                        </li>
+                        <li class="category-item" data-filter-type="category" data-filter-value="roof">
+                            <i class="fas fa-home"></i> Покрівельні матеріали
+                        </li>
+                        <li class="category-item" data-filter-type="category" data-filter-value="walls">
+                            <i class="fas fa-border-all"></i> Матеріали для стін
+                        </li>
+                        <li class="category-item" data-filter-type="category" data-filter-value="floor">
+                            <i class="fas fa-th-large"></i> Підлогова покриття
+                        </li>
+                        <li class="category-item" data-filter-type="category" data-filter-value="windows">
+                            <i class="fas fa-window-maximize"></i> Вікна та двері
+                        </li>
+                        <li class="category-item" data-filter-type="category" data-filter-value="sanitary">
+                            <i class="fas fa-faucet"></i> Сантехніка
+                        </li>
+                        <li class="category-item" data-filter-type="category" data-filter-value="electrical">
+                            <i class="fas fa-lightbulb"></i> Електрика
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="filter-group">
+                    <h3><i class="fas fa-star"></i> Рейтинг</h3>
+                    <ul class="category-list" id="rating-filter">
+                        <li class="category-item active" data-filter-type="rating" data-filter-value="0">
+                            <i class="fas fa-circle"></i> Будь-який рейтинг
+                        </li>
+                        <li class="category-item" data-filter-type="rating" data-filter-value="4">
+                            <i class="fas fa-star"></i> Від 4 зірок
+                        </li>
+                        <li class="category-item" data-filter-type="rating" data-filter-value="3">
+                            <i class="fas fa-star"></i> Від 3 зірок
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="filter-group">
+                    <h3><i class="fas fa-map-marker-alt"></i> Місцезнаходження</h3>
+                    <ul class="category-list" id="location-filter">
+                        <li class="category-item active" data-filter-type="location" data-filter-value="all">
+                            <i class="fas fa-circle"></i> Усі регіони
+                        </li>
+                        <li class="category-item" data-filter-type="location" data-filter-value="kyiv">
+                            <i class="fas fa-map-pin"></i> Київська область
+                        </li>
+                        <li class="category-item" data-filter-type="location" data-filter-value="lviv">
+                            <i class="fas fa-map-pin"></i> Львівська область
+                        </li>
+                        <li class="category-item" data-filter-type="location" data-filter-value="odesa">
+                            <i class="fas fa-map-pin"></i> Одеська область
+                        </li>
+                        <li class="category-item" data-filter-type="location" data-filter-value="kharkiv">
+                            <i class="fas fa-map-pin"></i> Харківська область
+                        </li>
+                         <li class="category-item" data-filter-type="location" data-filter-value="kharkiv">
+                            <i class="fas fa-map-pin"></i> Дніпропетровська область
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Права колонка: Картки постачальників -->
+            <div class="suppliers-section" id="suppliers-list">
+                <!-- Картки будуть додаватись динамічно -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Дані постачальників
+        const suppliersData = [
+            {
+                id: 1,
+                name: 'ТОВ "БудСервіс Плюс"',
+                categories: ['roof', 'walls'],
+                rating: 4,
+                reviews: 42,
+                region: 'kyiv',
+                phone: '+380 44 123 4567',
+                schedule: 'Пн-Пт: 9:00-18:00\nСб: 10:00-15:00',
+                address: 'м. Київ, вул. Будівельна, 15',
+                icon: 'building',
+                favorite: true
+            },
+            {
+                id: 2,
+                name: 'ПП "ЕлітБудМатеріали"',
+                categories: ['floor', 'windows'],
+                rating: 5,
+                reviews: 28,
+                region: 'lviv',
+                phone: '+380 67 555 4433',
+                schedule: 'Пн-Сб: 8:00-20:00\nНд: 9:00-14:00',
+                address: 'м. Львів, просп. Свободи, 45',
+                icon: 'warehouse',
+                favorite: false
+            },
+            {
+                id: 3,
+                name: 'ТД "ПрофіБуд"',
+                categories: ['sanitary', 'electrical'],
+                rating: 3,
+                reviews: 35,
+                region: 'odesa',
+                phone: '+380 50 777 8899',
+                schedule: 'Пн-Пт: 8:30-19:00\nСб-Нд: 10:00-16:00',
+                address: 'м. Одеса, вул. Архітекторська, 7',
+                icon: 'tools',
+                favorite: false
+            },
+            {
+                id: 4,
+                name: 'СФ "УніверсалБуд"',
+                categories: ['roof', 'windows', 'electrical'],
+                rating: 4,
+                reviews: 19,
+                region: 'kharkiv',
+                phone: '+380 63 222 3344',
+                schedule: 'Пн-Пт: 10:00-19:00\nСб: 10:00-16:00',
+                address: 'м. Харків, вул. Інженерна, 28',
+                icon: 'hard-hat',
+                favorite: true
+            },
+            {
+                id: 5,
+                name: 'ТОВ "Сучасні Технології"',
+                categories: ['walls', 'floor', 'sanitary'],
+                rating: 4,
+                reviews: 31,
+                region: 'dnipro',
+                phone: '+380 99 888 7766',
+                schedule: 'Пн-Сб: 8:00-20:00\nНд: вихідний',
+                address: 'м. Дніпро, бул. Січеславський, 12',
+                icon: 'paint-roller',
+                favorite: false
+            },
+            {
+                id: 6,
+                name: 'ПП "БудІнвест Груп"',
+                categories: ['roof', 'walls', 'floor'],
+                rating: 3,
+                reviews: 24,
+                region: 'vinnytsia',
+                phone: '+380 66 111 2233',
+                schedule: 'Щоденно: 9:00-18:00\nБез вихідних',
+                address: 'м. Вінниця, вул. Соборна, 34',
+                icon: 'home',
+                favorite: false
+            }
+        ];
+        
+        // Категорії матеріалів
+        const categories = {
+            roof: 'Покрівельні матеріали',
+            walls: 'Матеріали для стін',
+            floor: 'Підлогова покриття',
+            windows: 'Вікна та двері',
+            sanitary: 'Сантехніка',
+            electrical: 'Електрика'
+        };
+        
+        // Регіони
+        const regions = {
+            kyiv: 'Київська область',
+            lviv: 'Львівська область',
+            odesa: 'Одеська область',
+            kharkiv: 'Харківська область',
+            dnipro: 'Дніпропетровська область',
+            vinnytsia: 'Вінницька область'
+        };
+        
+        // Поточні фільтри
+        let activeFilters = {
+            category: 'all',
+            rating: '0',
+            location: 'all',
+            search: ''
+        };
+        
+        // Ініціалізація сторінки
+        document.addEventListener('DOMContentLoaded', function() {
+            renderSuppliers();
+            setupEventListeners();
+        });
+        
+        // Відображення постачальників
+        function renderSuppliers() {
+            const suppliersList = document.getElementById('suppliers-list');
+            const filteredSuppliers = filterSuppliers();
+            
+            suppliersList.innerHTML = '';
+            
+            if (filteredSuppliers.length === 0) {
+                suppliersList.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <h3>Постачальників не знайдено</h3>
+                        <p>Спробуйте змінити параметри фільтрів</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredSuppliers.forEach(supplier => {
+                const categoriesText = supplier.categories.map(cat => categories[cat]).join(', ');
+                
+                const ratingStars = Array(5).fill().map((_, i) => 
+                    `<span class="rating-star ${i < supplier.rating ? 'active' : ''}">
+                        <i class="fas fa-star"></i>
+                    </span>`
+                ).join('');
+                
+                suppliersList.innerHTML += `
+                    <div class="supplier-card" data-id="${supplier.id}">
+                        <button class="favorite-btn ${supplier.favorite ? 'active' : ''}">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <div class="supplier-header">
+                            <div class="supplier-logo">
+                                <i class="fas fa-${supplier.icon}"></i>
+                            </div>
+                            <div>
+                                <h3 class="supplier-name">${supplier.name}</h3>
+                                <p class="supplier-category">${categoriesText}</p>
+                                <div class="supplier-rating">
+                                    <div class="rating-stars">${ratingStars}</div>
+                                    <span class="rating-value">${supplier.rating}.0 (${supplier.reviews})</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="supplier-info">
+                            <div class="info-item">
+                                <i class="fas fa-phone"></i>
+                                <span class="info-label">Телефон:</span>
+                                <span class="info-value">${supplier.phone}</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span class="info-label">Графік роботи:</span>
+                                <span class="info-value">${supplier.schedule.replace(/\n/g, '<br>')}</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span class="info-label">Адреса:</span>
+                                <span class="info-value">${supplier.address}</span>
+                            </div>
+                        </div>
+                        <a href="tel:${supplier.phone}" class="contact-button">
+                            <i class="fas fa-phone-alt"></i> Зателефонувати
+                        </a>
+                    </div>
+                `;
+            });
+            
+            // Додаємо обробників для кнопок "улюблене"
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const supplierId = this.closest('.supplier-card').dataset.id;
+                    const supplier = suppliersData.find(s => s.id == supplierId);
+                    
+                    if (supplier) {
+                        supplier.favorite = !supplier.favorite;
+                        this.classList.toggle('active');
+                    }
+                });
+            });
+            
+            updateActiveFiltersDisplay();
+        }
+        
+        // Фільтрація постачальників
+        function filterSuppliers() {
+            return suppliersData.filter(supplier => {
+                // Фільтр категорій
+                if (activeFilters.category !== 'all' && 
+                    !supplier.categories.includes(activeFilters.category)) {
+                    return false;
+                }
+                
+                // Фільтр рейтингу
+                if (parseInt(activeFilters.rating) > 0 && 
+                    supplier.rating < parseInt(activeFilters.rating)) {
+                    return false;
+                }
+                
+                // Фільтр регіону
+                if (activeFilters.location !== 'all' && 
+                    supplier.region !== activeFilters.location) {
+                    return false;
+                }
+                
+                // Фільтр пошуку
+                if (activeFilters.search) {
+                    const searchTerm = activeFilters.search.toLowerCase();
+                    const nameMatch = supplier.name.toLowerCase().includes(searchTerm);
+                    const categoriesMatch = supplier.categories.some(cat => 
+                        categories[cat].toLowerCase().includes(searchTerm)
+                    );
+                    
+                    if (!nameMatch && !categoriesMatch) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+        }
+        
+        // Налаштування обробників подій
+        function setupEventListeners() {
+            // Обробники фільтрів категорій
+            document.querySelectorAll('#category-filter .category-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Видаляємо активний клас з усіх елементів категорії
+                    document.querySelectorAll('#category-filter .category-item').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    
+                    // Додаємо активний клас до обраного елемента
+                    this.classList.add('active');
+                    
+                    // Оновлюємо фільтр
+                    activeFilters.category = this.dataset.filterValue;
+                    renderSuppliers();
+                });
+            });
+            
+            // Обробники фільтрів рейтингу
+            document.querySelectorAll('#rating-filter .category-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Видаляємо активний клас з усіх елементів рейтингу
+                    document.querySelectorAll('#rating-filter .category-item').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    
+                    // Додаємо активний клас до обраного елемента
+                    this.classList.add('active');
+                    
+                    // Оновлюємо фільтр
+                    activeFilters.rating = this.dataset.filterValue;
+                    renderSuppliers();
+                });
+            });
+            
+            // Обробники фільтрів місцезнаходження
+            document.querySelectorAll('#location-filter .category-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Видаляємо активний клас з усіх елементів місцезнаходження
+                    document.querySelectorAll('#location-filter .category-item').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    
+                    // Додаємо активний клас до обраного елемента
+                    this.classList.add('active');
+                    
+                    // Оновлюємо фільтр
+                    activeFilters.location = this.dataset.filterValue;
+                    renderSuppliers();
+                });
+            });
+            
+            // Пошук постачальників
+            const searchInput = document.getElementById('supplier-search');
+            searchInput.addEventListener('input', function() {
+                activeFilters.search = this.value;
+                renderSuppliers();
+            });
+            
+            // Кнопка "Додати постачальника"
+            document.querySelector('.add-supplier-btn').addEventListener('click', function() {
+                alert('Функціонал додавання нового постачальника буде реалізовано у наступній версії!');
+            });
+            
+            // Кнопка очищення фільтрів
+            document.querySelector('.active-filters').addEventListener('click', function(e) {
+                if (e.target.classList.contains('clear-filters')) {
+                    resetFilters();
+                }
+            });
+        }
+        
+        // Оновлення відображення активних фільтрів
+        function updateActiveFiltersDisplay() {
+            const activeFiltersContainer = document.querySelector('.active-filters');
+            activeFiltersContainer.innerHTML = '';
+            
+            const filters = [];
+            
+            // Категорія
+            if (activeFilters.category !== 'all') {
+                filters.push({
+                    type: 'category',
+                    value: activeFilters.category,
+                    text: categories[activeFilters.category]
+                });
+            }
+            
+            // Рейтинг
+            if (activeFilters.rating !== '0') {
+                filters.push({
+                    type: 'rating',
+                    value: activeFilters.rating,
+                    text: `Рейтинг: від ${activeFilters.rating} зірок`
+                });
+            }
+            
+            // Місцезнаходження
+            if (activeFilters.location !== 'all') {
+                filters.push({
+                    type: 'location',
+                    value: activeFilters.location,
+                    text: regions[activeFilters.location]
+                });
+            }
+            
+            // Пошук
+            if (activeFilters.search) {
+                filters.push({
+                    type: 'search',
+                    value: activeFilters.search,
+                    text: `Пошук: "${activeFilters.search}"`
+                });
+            }
+            
+            // Додаємо теги активних фільтрів
+            filters.forEach(filter => {
+                const tag = document.createElement('div');
+                tag.className = 'filter-tag';
+                tag.innerHTML = `
+                    ${filter.text}
+                    <i class="fas fa-times" data-filter-type="${filter.type}"></i>
+                `;
+                activeFiltersContainer.appendChild(tag);
+            });
+            
+            // Додаємо кнопку очищення, якщо є активні фільтри
+            if (filters.length > 0) {
+                const clearBtn = document.createElement('div');
+                clearBtn.className = 'clear-filters';
+                clearBtn.textContent = 'Очистити всі фільтри';
+                activeFiltersContainer.appendChild(clearBtn);
+                
+                // Додаємо обробник для видалення окремих фільтрів
+                document.querySelectorAll('.filter-tag i').forEach(icon => {
+                    icon.addEventListener('click', function() {
+                        const filterType = this.dataset.filterType;
+                        resetFilter(filterType);
+                    });
+                });
+            }
+        }
+        
+        // Скидання конкретного фільтра
+        function resetFilter(filterType) {
+            switch(filterType) {
+                case 'category':
+                    activeFilters.category = 'all';
+                    document.querySelector('#category-filter .category-item[data-filter-value="all"]').click();
+                    break;
+                case 'rating':
+                    activeFilters.rating = '0';
+                    document.querySelector('#rating-filter .category-item[data-filter-value="0"]').click();
+                    break;
+                case 'location':
+                    activeFilters.location = 'all';
+                    document.querySelector('#location-filter .category-item[data-filter-value="all"]').click();
+                    break;
+                case 'search':
+                    activeFilters.search = '';
+                    document.getElementById('supplier-search').value = '';
+                    break;
+            }
+            
+            renderSuppliers();
+        }
+        
+        // Повне скидання фільтрів
+        function resetFilters() {
+            activeFilters = {
+                category: 'all',
+                rating: '0',
+                location: 'all',
+                search: ''
+            };
+            
+            // Оновлюємо UI фільтрів
+            document.querySelector('#category-filter .category-item[data-filter-value="all"]').click();
+            document.querySelector('#rating-filter .category-item[data-filter-value="0"]').click();
+            document.querySelector('#location-filter .category-item[data-filter-value="all"]').click();
+            document.getElementById('supplier-search').value = '';
+            
+            renderSuppliers();
+        }
+    </script>
+</body>
+</html>
